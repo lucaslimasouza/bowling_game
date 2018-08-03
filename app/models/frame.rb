@@ -10,6 +10,14 @@ class Frame < ApplicationRecord
   before_save :set_up_status
 
   def set_up_status
-    self.status = Frame.statuses['strike'] if pitches.length == 1 && pitches.first.pins_knocked_down == 10
+    if is_first_pitch? && pitches.first.did_strike?
+      self.status = Frame.statuses['strike']
+    end
+  end
+
+  private
+
+  def is_first_pitch?
+    pitches.length == 1
   end
 end
