@@ -10,7 +10,7 @@ RSpec.describe Frame, type: :model do
 
     it { is_expected.to have_many(:pitches).dependent(:destroy) }
 
-    it 'have max two Pitches' do
+    it 'have maximum two Pitches' do
       frame = build(:frame)
 
       frame.pitches = build_list(:pitch, 3)
@@ -18,6 +18,19 @@ RSpec.describe Frame, type: :model do
 
       frame.pitches = build_list(:pitch, 2)
       expect(frame.valid?).to be_truthy
+    end
+  end
+
+  describe '#status' do
+    subject { create(:frame) }
+
+    context 'strike' do
+      it 'is when first Pitch has 10 pins knocked down' do
+        subject.pitches.build(attributes_for(:pitch, pins_knocked_down: 10))
+        subject.save
+
+        expect(subject.strike?).to be_truthy
+      end
     end
   end
 end
