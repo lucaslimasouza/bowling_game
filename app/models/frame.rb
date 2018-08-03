@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class Frame < ApplicationRecord
-  enum status: %i[open strike spare end]
+  enum status: %i[open strike spare ends]
   has_many :pitches, dependent: :destroy
 
   validates :status, :total_pins, presence: true
@@ -14,6 +14,9 @@ class Frame < ApplicationRecord
       self.status = Frame.statuses['strike']
     elsif is_spare?
       self.status = Frame.statuses['spare']
+    elsif is_ends?
+      self.status = Frame.statuses['ends']
+      self.score = sum_score
     end
   end
 
@@ -29,5 +32,13 @@ class Frame < ApplicationRecord
 
   def is_first_pitch?
     pitches.length == 1
+  end
+
+  def is_ends?
+    pitches.sum(&:pins_knocked_down) < 10
+  end
+
+  def sum_score
+    pitches.sum(&:pins_knocked_down)
   end
 end

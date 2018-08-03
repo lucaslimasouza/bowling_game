@@ -30,6 +30,7 @@ RSpec.describe Frame, type: :model do
         subject.save
 
         expect(subject.strike?).to be_truthy
+        expect(subject.score).to eq 0
       end
     end
 
@@ -40,6 +41,18 @@ RSpec.describe Frame, type: :model do
         subject.save
 
         expect(subject.spare?).to be_truthy
+        expect(subject.score).to eq 0
+      end
+    end
+
+    context 'ends' do
+      it 'is when all Pitches has less than 10 pins knocked down' do
+        pitches = build_list(:pitch, 2, pins_knocked_down: 4)
+        subject.pitches = pitches
+        subject.save
+
+        expect(subject.ends?).to be_truthy
+        expect(subject.score).to eq 8
       end
     end
   end
