@@ -32,5 +32,15 @@ RSpec.describe Frame, type: :model do
         expect(subject.strike?).to be_truthy
       end
     end
+
+    context 'spare' do
+      it 'is when all Pitches has 10 pins knocked down' do
+        pitches = build_list(:pitch, 2, pins_knocked_down: 5)
+        subject.pitches = pitches
+        subject.save
+
+        expect(subject.spare?).to be_truthy
+      end
+    end
   end
 end
