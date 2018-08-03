@@ -95,5 +95,5 @@ RSpec.configure do |config|
   #   Kernel.srand config.seed
   config.color = true
   config.tty = true
-  config.formatter = :document
+  config.formatter = :documentation
 end
