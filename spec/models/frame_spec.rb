@@ -9,5 +9,15 @@ RSpec.describe Frame, type: :model do
     end
 
     it { is_expected.to have_many(:pitches).dependent(:destroy) }
+
+    it 'have max two Pitches' do
+      frame = build(:frame)
+
+      frame.pitches = build_list(:pitch, 3)
+      expect(frame.valid?).to be_falsy
+
+      frame.pitches = build_list(:pitch, 2)
+      expect(frame.valid?).to be_truthy
+    end
   end
 end
