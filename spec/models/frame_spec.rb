@@ -8,6 +8,10 @@ RSpec.describe Frame, type: :model do
       it { is_expected.to validate_presence_of field }
     end
 
+    %i[total_pins score].each do |field|
+      it { is_expected.to validate_numericality_of field }
+    end
+
     it { is_expected.to have_many(:pitches).dependent(:destroy) }
 
     it 'have maximum two Pitches' do
@@ -30,7 +34,7 @@ RSpec.describe Frame, type: :model do
         subject.save
 
         expect(subject.strike?).to be_truthy
-        expect(subject.score).to be_nil
+        expect(subject.score).to eq 0
       end
     end
 
@@ -41,7 +45,7 @@ RSpec.describe Frame, type: :model do
         subject.save
 
         expect(subject.spare?).to be_truthy
-        expect(subject.score).to be_nil
+        expect(subject.score).to eq 0
       end
     end
 

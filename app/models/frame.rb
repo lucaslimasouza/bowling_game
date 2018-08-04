@@ -6,10 +6,12 @@ class Frame < ApplicationRecord
 
   validates :status, :total_pins, presence: true
   validates :pitches, length: { maximum: 2 }
+  validates :total_pins, :score, numericality: true
 
   before_save :set_up_status
 
   def set_up_status
+    self.score = 0
     if is_strike?
       self.status = Frame.statuses['strike']
     elsif is_spare?
