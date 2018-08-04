@@ -16,22 +16,28 @@ class Game < ApplicationRecord
 
   def update_frame_with_strike
     score ||= 0
-    frames.reload.each_with_index do |frame, index|
-      next_frame = frames[index + 1]
 
+    frames.each_with_index do |frame, index|
+      next_frame = frames[index + 1]
+      previous_frame = frames[index - 1]
       if frame.strike? && next_frame && next_frame.ends?
         frame.score = frame.sum_score + next_frame.sum_score
         frame.status = Frame.statuses['ends']
         frame.save
-      end
-
-      if frame.spare? && next_frame && next_frame.is_first_pitch?
-        frame.score = frame.sum_score + next_frame.sum_score
+      elsif frame.spare? && next_frame && next_frame.is_first_pitch?
+        frame.score = sum_score_to_frame(previous_frame, frame, next_frame)
         frame.status = Frame.statuses['ends']
         frame.save
       end
-
-      self.score += frame.score
     end
+    self.score = frames.sum(&:score)
+  end
+
+  private
+
+  def sum_score_to_frame(previous_frame, frame, next_frame)
+    total = frame.sum_score + next_frame.sum_score
+    return total + previous_frame.score if previous_frame
+    total
   end
 end

@@ -73,7 +73,7 @@ RSpec.describe Game, type: :model do
         expect(subject.score).to eq 0
       end
 
-      it "update Frames's score after one Pitches" do
+      it "update Frames's score after one Pitch" do
         frame = subject.current_frame
         frame.save
         frame.pitches.create(pins_knocked_down: 3)
@@ -84,6 +84,35 @@ RSpec.describe Game, type: :model do
         expect(first_frame.ends?).to be_truthy
         expect(first_frame.score).to eq 13
         expect(subject.score).to eq 13
+      end
+
+      context '3 or more Frames' do
+        it 'update the score of Frame with spare status' do
+          spare_frame = subject.current_frame
+
+          spare_frame.pitches.build(pins_knocked_down: 5)
+          spare_frame.save
+          subject.save
+
+          spare_frame.pitches.create(pins_knocked_down: 5)
+          spare_frame.save
+          subject.save
+
+          frame = subject.current_frame
+          frame.pitches.build(pins_knocked_down: 4)
+          frame.save
+          subject.save
+
+          frame.pitches.create(pins_knocked_down: 4)
+          frame.save
+          subject.save
+
+          spare_frame.reload
+
+          expect(spare_frame.ends?).to be_truthy
+          expect(spare_frame.score).to eq 29
+          expect(subject.score).to eq 52
+        end
       end
     end
   end
