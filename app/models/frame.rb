@@ -13,7 +13,7 @@ class Frame < ApplicationRecord
   before_save :set_up_status
 
   def set_up_status
-    self.score = 0
+    self.score =  score || 0
     if is_strike?
       self.status = Frame.statuses['strike']
     elsif is_spare?
@@ -24,14 +24,18 @@ class Frame < ApplicationRecord
     end
   end
 
+  def sum_score
+    pitches.sum(&:pins_knocked_down)
+  end
+
   private
 
   def is_strike?
-    is_first_pitch? && pitches.first.did_strike?
+    is_first_pitch? && pitches.first.did_strike? && open?
   end
 
   def is_spare?
-    pitches.sum(&:pins_knocked_down) == 10
+    pitches.sum(&:pins_knocked_down) == 10 && open?
   end
 
   def is_first_pitch?
@@ -40,10 +44,6 @@ class Frame < ApplicationRecord
 
   def is_ends?
     pitches.sum(&:pins_knocked_down) < 10 && pitches.length == 2
-  end
-
-  def sum_score
-    pitches.sum(&:pins_knocked_down)
   end
 
   def maximum_pins_knocked_down

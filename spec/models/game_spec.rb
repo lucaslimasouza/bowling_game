@@ -30,11 +30,32 @@ RSpec.describe Game, type: :model do
     subject { create(:game) }
 
     context 'strike' do
+      before(:each) do
+        frame = subject.current_frame
+        frame.pitches.build(pins_knocked_down: 10)
+        frame.save
+      end
+
       it 'has one Frame with strike and score 0' do
-        subject.current_frame.pitches.build(pins_knocked_down: 10)
-        subject.save
         expect(subject.frames.last.strike?).to be_truthy
         expect(subject.score).to eq 0
+      end
+
+      it "update Frame's score after 2 Pitches" do
+        frame = subject.current_frame
+        frame.save
+        frame.pitches.create(pins_knocked_down: 3)
+
+        frame = subject.current_frame
+        frame.pitches.create(pins_knocked_down: 6)
+        frame.save
+
+        subject.save
+        first_frame = subject.frames.first
+
+        expect(first_frame.ends?).to be_truthy
+        expect(first_frame.score).to eq 19
+        expect(subject.score).to eq 28
       end
     end
   end
