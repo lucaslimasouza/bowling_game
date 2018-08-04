@@ -9,6 +9,11 @@ RSpec.describe Pitch, type: :model do
     it { is_expected.to belong_to :frame }
 
     it { is_expected.to validate_numericality_of :pins_knocked_down }
+
+    it {
+      is_expected.to validate_numericality_of(:pins_knocked_down)
+        .is_less_than_or_equal_to(10)
+    }
   end
 
   describe '#did_strike' do
