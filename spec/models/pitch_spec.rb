@@ -7,6 +7,8 @@ RSpec.describe Pitch, type: :model do
     it { is_expected.to validate_presence_of :pins_knocked_down }
 
     it { is_expected.to belong_to :frame }
+
+    it { is_expected.to validate_numericality_of :pins_knocked_down }
   end
 
   describe '#did_strike' do
