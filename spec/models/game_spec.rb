@@ -72,6 +72,19 @@ RSpec.describe Game, type: :model do
         expect(subject.frames.last.spare?).to be_truthy
         expect(subject.score).to eq 0
       end
+
+      it "update Frames's score after one Pitches" do
+        frame = subject.current_frame
+        frame.save
+        frame.pitches.create(pins_knocked_down: 3)
+
+        subject.save
+        first_frame = subject.frames.first
+
+        expect(first_frame.ends?).to be_truthy
+        expect(first_frame.score).to eq 13
+        expect(subject.score).to eq 13
+      end
     end
   end
 end

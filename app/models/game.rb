@@ -25,6 +25,12 @@ class Game < ApplicationRecord
         frame.save
       end
 
+      if frame.spare? && next_frame && next_frame.is_first_pitch?
+        frame.score = frame.sum_score + next_frame.sum_score
+        frame.status = Frame.statuses['ends']
+        frame.save
+      end
+
       self.score += frame.score
     end
   end

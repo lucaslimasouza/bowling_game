@@ -28,6 +28,10 @@ class Frame < ApplicationRecord
     pitches.sum(&:pins_knocked_down)
   end
 
+  def is_first_pitch?
+    pitches.length == 1
+  end
+
   private
 
   def is_strike?
@@ -36,10 +40,6 @@ class Frame < ApplicationRecord
 
   def is_spare?
     pitches.sum(&:pins_knocked_down) == 10 && open?
-  end
-
-  def is_first_pitch?
-    pitches.length == 1
   end
 
   def is_ends?
