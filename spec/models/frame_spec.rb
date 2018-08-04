@@ -14,6 +14,8 @@ RSpec.describe Frame, type: :model do
 
     it { is_expected.to have_many(:pitches).dependent(:destroy) }
 
+    it { is_expected.to belong_to :game }
+
     it 'have maximum two Pitches' do
       frame = build(:frame)
 

@@ -3,6 +3,7 @@
 class Frame < ApplicationRecord
   enum status: %i[open strike spare ends]
   has_many :pitches, dependent: :destroy
+  belongs_to :game
 
   validates :status, :total_pins, presence: true
   validates :pitches, length: { maximum: 2 }

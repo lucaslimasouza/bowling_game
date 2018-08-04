@@ -5,5 +5,6 @@ FactoryBot.define do
     total_pins 10
     status 0
     score 0
+    association :game
   end
 end
