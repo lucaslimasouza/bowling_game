@@ -23,6 +23,16 @@ RSpec.describe Frame, type: :model do
       frame.pitches = build_list(:pitch, 2)
       expect(frame.valid?).to be_truthy
     end
+
+    it 'has maximum 10 pins knocked down' do
+      frame = create(:frame)
+
+      frame.pitches << build(:pitch, pins_knocked_down: 6)
+      expect(frame.valid?).to be_truthy
+
+      frame.pitches << build(:pitch, pins_knocked_down: 10)
+      expect(frame.valid?).to be_falsy
+    end
   end
 
   describe '#status' do

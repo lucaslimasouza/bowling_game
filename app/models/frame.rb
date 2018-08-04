@@ -7,6 +7,7 @@ class Frame < ApplicationRecord
   validates :status, :total_pins, presence: true
   validates :pitches, length: { maximum: 2 }
   validates :total_pins, :score, numericality: true
+  validate :maximum_pins_knocked_down
 
   before_save :set_up_status
 
@@ -42,5 +43,11 @@ class Frame < ApplicationRecord
 
   def sum_score
     pitches.sum(&:pins_knocked_down)
+  end
+
+  def maximum_pins_knocked_down
+    if pitches.sum(&:pins_knocked_down) > 10 && pitches.length == 2
+      errors.add(:pitches, "can't has more then 10 pins knocked down")
+    end
   end
 end
