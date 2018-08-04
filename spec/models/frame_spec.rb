@@ -30,7 +30,7 @@ RSpec.describe Frame, type: :model do
         subject.save
 
         expect(subject.strike?).to be_truthy
-        expect(subject.score).to eq 0
+        expect(subject.score).to be_nil
       end
     end
 
@@ -41,7 +41,7 @@ RSpec.describe Frame, type: :model do
         subject.save
 
         expect(subject.spare?).to be_truthy
-        expect(subject.score).to eq 0
+        expect(subject.score).to be_nil
       end
     end
 

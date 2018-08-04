@@ -35,7 +35,7 @@ class Frame < ApplicationRecord
   end
 
   def is_ends?
-    pitches.sum(&:pins_knocked_down) < 10
+    pitches.sum(&:pins_knocked_down) < 10 && pitches.length == 2
   end
 
   def sum_score
