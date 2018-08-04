@@ -66,6 +66,7 @@ RSpec.describe Frame, type: :model do
         subject.save
 
         expect(subject.ends?).to be_truthy
+        # TODO: fix the score afte game be defined
         expect(subject.score).to eq 8
       end
     end
