@@ -25,4 +25,17 @@ RSpec.describe Game, type: :model do
       expect(game.valid?).to be_falsy
     end
   end
+
+  describe '#frames' do
+    subject { create(:game) }
+
+    context 'strike' do
+      it 'has one Frame with strike and score 0' do
+        subject.current_frame.pitches.build(pins_knocked_down: 10)
+        subject.save
+        expect(subject.frames.last.strike?).to be_truthy
+        expect(subject.score).to eq 0
+      end
+    end
+  end
 end
