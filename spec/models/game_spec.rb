@@ -58,5 +58,20 @@ RSpec.describe Game, type: :model do
         expect(subject.score).to eq 28
       end
     end
+
+    context 'spare' do
+      before(:each) do
+        frame = subject.current_frame
+        frame.pitches.build(pins_knocked_down: 5)
+        frame.save
+        frame.pitches.create(pins_knocked_down: 5)
+        frame.save
+      end
+
+      it 'has one Frame with spare and score 0' do
+        expect(subject.frames.last.spare?).to be_truthy
+        expect(subject.score).to eq 0
+      end
+    end
   end
 end
