@@ -14,5 +14,15 @@ RSpec.describe Game, type: :model do
     }
 
     it { is_expected.to have_many(:frames).dependent(:destroy) }
+
+    it 'has maximum 10 Frames' do
+      game = create(:game)
+
+      game.frames = build_list(:frame, 9)
+      expect(game.valid?).to be_truthy
+
+      game.frames << build_list(:frame, 2)
+      expect(game.valid?).to be_falsy
+    end
   end
 end
