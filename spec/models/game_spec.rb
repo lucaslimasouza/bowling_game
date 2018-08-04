@@ -4,5 +4,9 @@ RSpec.describe Game, type: :model do
   describe 'validations' do
     it { is_expected.to validate_presence_of :user_name }
     it { is_expected.to validate_numericality_of :score }
+    it {
+      is_expected.to validate_numericality_of(:score)
+        .is_less_than_or_equal_to(300)
+    }
   end
 end
