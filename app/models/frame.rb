@@ -6,7 +6,7 @@ class Frame < ApplicationRecord
   belongs_to :game
 
   validates :status, :total_pins, presence: true
-  validates :pitches, length: { maximum: 2 }
+  # validates :pitches
   validates :total_pins, :score, numericality: true
   validate :maximum_pins_knocked_down
 

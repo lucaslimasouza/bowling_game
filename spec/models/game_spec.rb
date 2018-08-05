@@ -8,11 +8,6 @@ RSpec.describe Game, type: :model do
 
     it { is_expected.to validate_numericality_of :score }
 
-    it {
-      is_expected.to validate_numericality_of(:score)
-        .is_less_than_or_equal_to(300)
-    }
-
     it { is_expected.to have_many(:frames).dependent(:destroy) }
     it { is_expected.to have_many(:pitches) }
 
@@ -137,6 +132,49 @@ RSpec.describe Game, type: :model do
           expect(subject.score).to eq 81
         end
       end
+    end
+  end
+
+  describe '#status' do
+    subject { create(:game) }
+
+    before(:each) do
+      9.times do
+        frame = subject.current_frame
+        frame.pitches.build(pins_knocked_down: 4, game: subject)
+        frame.save
+        subject.save
+
+        frame.pitches.create(pins_knocked_down: 4, game: subject)
+        frame.save
+        subject.save
+      end
+    end
+
+    context 'tenth Frame with spare status ' do
+      it 'ends the Game after one Pitche' do
+        frame = subject.current_frame
+        frame.pitches.build(pins_knocked_down: 5, game: subject)
+        frame.save
+        subject.save
+
+        frame.pitches.create(pins_knocked_down: 5, game: subject)
+        frame.save
+        subject.save
+        expect(subject.ends?).to be_falsy
+
+        frame.pitches.create(pins_knocked_down: 3, game: subject)
+        frame.save
+        subject.save
+
+        expect(subject.ends?).to be_truthy
+      end
+    end
+
+    context 'tenth Frame with strike status ' do
+    end
+
+    context 'tenth Frame with ends status ' do
     end
   end
 end
