@@ -18,9 +18,6 @@ class Frame < ApplicationRecord
       self.status = Frame.statuses['strike']
     elsif is_spare?
       self.status = Frame.statuses['spare']
-    elsif is_ends?
-      self.status = Frame.statuses['ends']
-      self.score = sum_score
     end
   end
 
@@ -28,8 +25,8 @@ class Frame < ApplicationRecord
     pitches.sum(&:pins_knocked_down)
   end
 
-  def is_first_pitch?
-    pitches.length == 1
+  def is_second_pitch?
+    pitches.length == 2
   end
 
   def update_to_ends_status(bonus)
@@ -48,8 +45,8 @@ class Frame < ApplicationRecord
     pitches.sum(&:pins_knocked_down) == 10 && open?
   end
 
-  def is_ends?
-    pitches.sum(&:pins_knocked_down) < 10 && pitches.length == 2
+  def is_first_pitch?
+    pitches.length == 1
   end
 
   def maximum_pins_knocked_down

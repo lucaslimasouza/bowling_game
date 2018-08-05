@@ -81,17 +81,5 @@ RSpec.describe Frame, type: :model do
         end
       end
     end
-
-    context 'ends' do
-      it 'is when all Pitches has less than 10 pins knocked down' do
-        pitches = build_list(:pitch, 2, pins_knocked_down: 4)
-        subject.pitches = pitches
-        subject.save
-
-        expect(subject.ends?).to be_truthy
-        # TODO: fix the score afte game be defined
-        expect(subject.score).to eq 8
-      end
-    end
   end
 end
