@@ -14,6 +14,7 @@ RSpec.describe Game, type: :model do
     }
 
     it { is_expected.to have_many(:frames).dependent(:destroy) }
+    it { is_expected.to have_many(:pitches) }
 
     it 'has maximum 10 Frames' do
       game = create(:game)
