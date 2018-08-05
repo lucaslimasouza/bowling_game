@@ -20,33 +20,44 @@ class Game < ApplicationRecord
 
   def update_frames
     frames.each_with_index do |frame, index|
-      next_frame = frames[index + 1]
-      previous_frame = get_previous_frame(index)
-
-      if frame.spare? && (has_next_pitches?(frame, 1) || is_last_frame_with_bonus(frame, 3))
-        bonus = pitches_bonus(frame, 1)
-        frame_score = sum_score_to_frame(previous_frame, frame, bonus)
-        frame.update_to_ends_status(frame_score)
-        next
-      end
-
-      if frame.strike? && (has_next_pitches?(frame, 2) || is_last_frame_with_bonus(frame, 3))
-        bonus = pitches_bonus(frame, 2)
-        frame_score = sum_score_to_frame(previous_frame, frame, bonus)
-        frame.update_to_ends_status(frame_score)
-        next
-      end
-
-      if frame.open? && frame.is_second_pitch?
-        frame_score = sum_score_to_frame(previous_frame, frame, 0)
-        frame.update_to_ends_status(frame_score)
-      end
+      run_spare_rule(frame, index)
+      run_strike_rule(frame, index)
+      run_default_rule(frame, index)
     end
 
     self.score = frames.sum(&:score)
   end
 
   private
+
+  def run_spare_rule(frame, index)
+    previous_frame = get_previous_frame(index)
+
+    if frame.spare? && (has_next_pitches?(frame, 1) || is_last_frame_with_bonus(frame, 3))
+      bonus = pitches_bonus(frame, 1)
+      frame_score = sum_score_to_frame(previous_frame, frame, bonus)
+      frame.update_to_ends_status(frame_score)
+    end
+  end
+
+  def run_strike_rule(frame, index)
+    previous_frame = get_previous_frame(index)
+
+    if frame.strike? && (has_next_pitches?(frame, 2) || is_last_frame_with_bonus(frame, 3))
+      bonus = pitches_bonus(frame, 2)
+      frame_score = sum_score_to_frame(previous_frame, frame, bonus)
+      frame.update_to_ends_status(frame_score)
+    end
+  end
+
+  def run_default_rule(frame, index)
+    previous_frame = get_previous_frame(index)
+
+    if frame.open? && frame.is_second_pitch?
+      frame_score = sum_score_to_frame(previous_frame, frame, 0)
+      frame.update_to_ends_status(frame_score)
+    end
+  end
 
   def sum_score_to_frame(previous_frame, frame, bonus)
     total = frame.sum_score + bonus
