@@ -192,6 +192,18 @@ RSpec.describe Game, type: :model do
     end
 
     context 'tenth Frame with ends status ' do
+      it 'ends the Game' do
+        frame = subject.current_frame
+        frame.pitches.build(pins_knocked_down: 3, game: subject)
+        frame.save
+        subject.save
+
+        frame.pitches.create(pins_knocked_down: 5, game: subject)
+        frame.save
+        subject.save
+
+        expect(subject.ends?).to be_truthy
+      end
     end
   end
 end
