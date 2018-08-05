@@ -31,6 +31,7 @@ class Frame < ApplicationRecord
 
   def update_to_ends_status(bonus)
     self.score = bonus
+    self.total_pins -= sum_score
     self.status = Frame.statuses['ends']
     save
   end

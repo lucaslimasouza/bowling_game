@@ -78,6 +78,7 @@ RSpec.describe Frame, type: :model do
 
           expect(subject.score).to eq 13
           expect(subject.ends?).to be_truthy
+          expect(subject.total_pins).to eq 0
         end
       end
     end
