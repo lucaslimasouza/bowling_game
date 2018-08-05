@@ -6,7 +6,7 @@ class Frame < ApplicationRecord
   belongs_to :game
 
   validates :status, :total_pins, presence: true
-  # validates :pitches
+  validates :pitches, length: { maximum: 2 }, if: :is_not_tenth_frame
   validates :total_pins, :score, numericality: true
   validate :maximum_pins_knocked_down
 
@@ -54,5 +54,9 @@ class Frame < ApplicationRecord
     if pitches.sum(&:pins_knocked_down) > 10 && pitches.length == 2
       errors.add(:pitches, "can't has more then 10 pins knocked down")
     end
+  end
+
+  def is_not_tenth_frame
+    Frame.where(game_id: game.id).count < 10 if game
   end
 end
