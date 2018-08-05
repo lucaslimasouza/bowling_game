@@ -1,4 +1,9 @@
 class Game < ApplicationRecord
+  SPARE_BONUS_PITCH = 1
+  STRIKE_BONUS_PITCHES = 2
+  DEFAULT_BONUS_PITCH = 0
+  TENTH_FRAME_PITCHES = 3
+
   has_many :frames, dependent: :destroy
   has_many :pitches
 
@@ -31,32 +36,33 @@ class Game < ApplicationRecord
   private
 
   def run_spare_rule(frame, index)
-    previous_frame = get_previous_frame(index)
-
-    if frame.spare? && (has_next_pitches?(frame, 1) || is_last_frame_with_bonus(frame, 3))
-      bonus = pitches_bonus(frame, 1)
-      frame_score = sum_score_to_frame(previous_frame, frame, bonus)
-      frame.update_to_ends_status(frame_score)
+    if frame.spare? && (
+      has_next_pitches?(frame, SPARE_BONUS_PITCH) ||
+      is_last_frame_with_bonus(frame, TENTH_FRAME_PITCHES)
+    )
+      bonus = pitches_bonus(frame, SPARE_BONUS_PITCH)
+      set_score_to_frame(frame, bonus, index)
     end
   end
 
   def run_strike_rule(frame, index)
-    previous_frame = get_previous_frame(index)
-
-    if frame.strike? && (has_next_pitches?(frame, 2) || is_last_frame_with_bonus(frame, 3))
-      bonus = pitches_bonus(frame, 2)
-      frame_score = sum_score_to_frame(previous_frame, frame, bonus)
-      frame.update_to_ends_status(frame_score)
+    if frame.strike? && (
+      has_next_pitches?(frame, STRIKE_BONUS_PITCHES) ||
+      is_last_frame_with_bonus(frame, TENTH_FRAME_PITCHES)
+    )
+      bonus = pitches_bonus(frame, STRIKE_BONUS_PITCHES)
+      set_score_to_frame(frame, bonus, index)
     end
   end
 
   def run_default_rule(frame, index)
-    previous_frame = get_previous_frame(index)
+    set_score_to_frame(frame, DEFAULT_BONUS_PITCH, index) if frame.open? && frame.is_second_pitch?
+  end
 
-    if frame.open? && frame.is_second_pitch?
-      frame_score = sum_score_to_frame(previous_frame, frame, 0)
-      frame.update_to_ends_status(frame_score)
-    end
+  def set_score_to_frame(frame, bonus, index)
+    previous_frame = get_previous_frame(index)
+    frame_score = sum_score_to_frame(previous_frame, frame, bonus)
+    frame.update_to_ends_status(frame_score)
   end
 
   def sum_score_to_frame(previous_frame, frame, bonus)
