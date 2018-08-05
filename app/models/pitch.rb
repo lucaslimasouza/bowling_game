@@ -2,6 +2,7 @@
 
 class Pitch < ApplicationRecord
   belongs_to :frame
+  belongs_to :game
 
   validates :pins_knocked_down, presence: true
   validates :pins_knocked_down, numericality: true

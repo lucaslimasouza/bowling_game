@@ -14,6 +14,8 @@ RSpec.describe Pitch, type: :model do
       is_expected.to validate_numericality_of(:pins_knocked_down)
         .is_less_than_or_equal_to(10)
     }
+
+    it { is_expected.to belong_to :game }
   end
 
   describe '#did_strike' do
