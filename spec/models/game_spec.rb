@@ -152,7 +152,7 @@ RSpec.describe Game, type: :model do
     end
 
     context 'tenth Frame with spare status ' do
-      it 'ends the Game after one Pitche' do
+      it 'ends the Game after one more Pitche' do
         frame = subject.current_frame
         frame.pitches.build(pins_knocked_down: 5, game: subject)
         frame.save
@@ -172,6 +172,23 @@ RSpec.describe Game, type: :model do
     end
 
     context 'tenth Frame with strike status ' do
+      it 'ends the Game after two more Pitche' do
+        frame = subject.current_frame
+        frame.pitches.build(pins_knocked_down: 10, game: subject)
+        frame.save
+        subject.save
+        expect(subject.ends?).to be_falsy
+
+        frame.pitches.create(pins_knocked_down: 5, game: subject)
+        frame.save
+        subject.save
+
+        frame.pitches.create(pins_knocked_down: 3, game: subject)
+        frame.save
+        subject.save
+
+        expect(subject.ends?).to be_truthy
+      end
     end
 
     context 'tenth Frame with ends status ' do

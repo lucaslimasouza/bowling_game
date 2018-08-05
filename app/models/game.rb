@@ -30,7 +30,7 @@ class Game < ApplicationRecord
         next
       end
 
-      if frame.strike? && has_next_pitches?(frame, 2)
+      if frame.strike? && (has_next_pitches?(frame, 2) || is_last_frame_with_bonus(frame, 3))
         bonus = pitches_bonus(frame, 2)
         frame_score = sum_score_to_frame(previous_frame, frame, bonus)
         frame.update_to_ends_status(frame_score)
