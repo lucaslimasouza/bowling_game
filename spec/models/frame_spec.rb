@@ -39,10 +39,17 @@ RSpec.describe Frame, type: :model do
 
   describe '#status' do
     subject { create(:frame) }
+    let!(:game) { create(:game) }
 
     context 'strike' do
       it 'is when first Pitch has 10 pins knocked down' do
-        subject.pitches.build(attributes_for(:pitch, pins_knocked_down: 10))
+        subject.pitches.build(
+          attributes_for(
+            :pitch,
+            pins_knocked_down: 10,
+            game_id: game.id
+          )
+        )
         subject.save
 
         expect(subject.strike?).to be_truthy
@@ -58,6 +65,20 @@ RSpec.describe Frame, type: :model do
 
         expect(subject.spare?).to be_truthy
         expect(subject.score).to eq 0
+      end
+
+      describe '#update_to_ends_status' do
+        it 'has new score when the bonus is defined' do
+          pitches = build_list(:pitch, 2, pins_knocked_down: 5)
+          subject.pitches = pitches
+          subject.save
+
+          new_score_bonus = 13
+          subject.update_to_ends_status(new_score_bonus)
+
+          expect(subject.score).to eq 13
+          expect(subject.ends?).to be_truthy
+        end
       end
     end
 

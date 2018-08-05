@@ -13,7 +13,7 @@ class Frame < ApplicationRecord
   before_save :set_up_status
 
   def set_up_status
-    self.score =  score || 0
+    self.score = score || 0
     if is_strike?
       self.status = Frame.statuses['strike']
     elsif is_spare?
@@ -30,6 +30,12 @@ class Frame < ApplicationRecord
 
   def is_first_pitch?
     pitches.length == 1
+  end
+
+  def update_to_ends_status(bonus)
+    self.score = bonus
+    self.status = Frame.statuses['ends']
+    save
   end
 
   private
