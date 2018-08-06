@@ -1,24 +1,67 @@
 # README
 
-This README would normally document whatever steps are necessary to get the
-application up and running.
+If you don't have Ruby and Rails installed in your machine, you can follow the steps below:
 
-Things you may want to cover:
+# Required
 
-* Ruby version
+* [Docker Engine](https://docs.docker.com/installation/)
+* [Docker Compose](https://docs.docker.com/compose/install/)
 
-* System dependencies
+To run the application do:
 
-* Configuration
+1-)
 
-* Database creation
+```
+  docker-compose build
+```
 
-* Database initialization
+After you finish as useful images, you can run an application using the command below:
 
-* How to run the test suite
+2-)
 
-* Services (job queues, cache servers, search engines, etc.)
+```
+  docker-compose up
+```
 
-* Deployment instructions
+3-) To create the database, in other terminal run the command:
 
-* ...
+```
+  docker-compose run web rake db:setup
+```
+
+The application can now be accessed by the host http://localhost:3000
+
+## API Requests
+
+run the Curl command:
+
+Create Game (to start a new bowling game)
+
+```
+curl -d '{"user_name": "Lucas Lima"}' -H "Content-Type: application/json" -X POST http://localhost:3000/games
+
+```
+
+Create Pitch (input the number of pins knocked down by each ball)
+
+```
+ curl -d '{"pins_knocked_down": 10}' -H "Content-Type: application/json" -X POST http://localhost:3000/games/1/pitches
+
+
+```
+
+Show Game
+
+```
+ curl http://localhost:3000/games/2
+
+```
+
+
+## Tests
+
+run the command:
+
+```
+  docker-compose run web rspec
+```
