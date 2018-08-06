@@ -4,6 +4,11 @@ class GamesController < ApplicationController
     json_response(@game, :created)
   end
 
+  def show
+    @game = Game.find(params[:id])
+    json_response(@game)
+  end
+
   private
 
   def game_params
