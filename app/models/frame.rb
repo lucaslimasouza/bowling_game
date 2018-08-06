@@ -8,7 +8,7 @@ class Frame < ApplicationRecord
   validates :status, :total_pins, presence: true
   validates :pitches, length: { maximum: 2 }, if: :is_not_tenth_frame
   validates :total_pins, :score, numericality: true
-  validate :maximum_pins_knocked_down
+  validate :maximum_pins_knocked_down, if: :is_not_tenth_frame
 
   before_save :set_up_status
 
@@ -31,7 +31,7 @@ class Frame < ApplicationRecord
 
   def update_to_ends_status(bonus)
     self.score = bonus
-    self.total_pins -= sum_score
+    self.total_pins -= sum_pins_last_pitches
     self.status = Frame.statuses['ends']
     save
   end
@@ -58,5 +58,11 @@ class Frame < ApplicationRecord
 
   def is_not_tenth_frame
     Frame.where(game_id: game.id).count < 10 if game
+  end
+
+  def sum_pins_last_pitches
+    sum = pitches.last(2).sum(&:pins_knocked_down)
+    return 10 if sum > 10
+    sum
   end
 end

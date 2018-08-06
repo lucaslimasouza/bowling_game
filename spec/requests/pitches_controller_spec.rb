@@ -15,7 +15,6 @@ RSpec.describe PitchesController, type: :request do
       }
 
       it 'creates a Pitch' do
-        p response.body
         expect(json['pins_knocked_down']).to eq 1
         expect(json['game_id']).to eq game.id
       end

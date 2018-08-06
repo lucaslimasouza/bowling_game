@@ -14,10 +14,10 @@ class Game < ApplicationRecord
   validates :score, numericality: true
   validates :frames, length: { maximum: 10 }
 
-  before_save :update_frames
-  after_save :update_status
+  before_save :update_frames, :update_status
 
   def current_frame
+    return frames.last if frames.count == 10
     frames
       .where(status: Frame.statuses['open'], score: 0)
       .first_or_initialize
