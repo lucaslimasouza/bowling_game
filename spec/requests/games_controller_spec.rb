@@ -4,7 +4,11 @@ RSpec.describe GamesController, type: :request do
   describe 'POST /games' do
     let(:valid_attributes) { attributes_for(:game).to_json }
     context 'when the request is valid' do
-      before { post '/games', params: valid_attributes, headers: { 'Content-Type': 'application/json' } }
+      before {
+        post '/games',
+        params: valid_attributes,
+        headers: { 'Content-Type': 'application/json' }
+      }
 
       it 'creates a Game' do
         expect(json['user_name']).to eq('User')
@@ -41,6 +45,28 @@ RSpec.describe GamesController, type: :request do
 
       it 'returns a not found message' do
         expect(response.body).to match(/Couldn't find Game/)
+      end
+    end
+  end
+
+  describe 'POST /games/:id/pitches' do
+    let!(:game) { create(:game) }
+
+    let(:valid_attributes) { attributes_for(:pitch, game_id: game.id).to_json }
+
+    context 'when the request is valid' do
+      before {
+        post "/games/#{game.id}/pitches",
+        params: valid_attributes,
+        headers: { 'Content-Type': 'application/json' }
+      }
+
+      it 'creates a Pitch' do
+        expect(json['user_name']).to eq('User')
+      end
+
+      it 'returns status code 201' do
+        expect(response).to have_http_status(201)
       end
     end
   end
